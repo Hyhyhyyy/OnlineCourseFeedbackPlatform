@@ -1,0 +1,9 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>课镜原生采集</title>
+<style>body{font:14px/1.6 system-ui;width:380px;margin:18px;color:#203345}h1{font-size:20px}textarea,input{box-sizing:border-box;width:100%;padding:8px;border:1px solid #bccbd4;border-radius:6px}textarea{min-height:90px}label{display:block;margin:10px 0}label input[type=checkbox]{width:auto}button{background:#244a70;color:white;border:0;border-radius:6px;padding:10px;margin:5px}p{white-space:pre-wrap}small{color:#596876}</style>
+<h1>采集 B站原生播放器</h1><p>先在B站页面开启“AI中文字幕”和弹幕，并保持播放器完整可见。</p>
+<label>工作台生成的采集配置<textarea id="config" placeholder="粘贴工作台的配对JSON"></textarea></label>
+<label>采集时间（秒，逗号分隔，最多30个）<input id="times" value="30,60,90"></label>
+<label><input type="checkbox" id="confirmed"> 已选中B站提供的中文字幕，并开启弹幕</label>
+<details><summary>播放器适配选项</summary><label>字幕元素选择器<input id="selector" value=".bpx-player-subtitle-panel-text, .bpx-player-subtitle-panel"></label><small>B站改版后可据实际页面修改。字幕文本未稳定或未识别到中文时，记录失败并跳过截图。</small></details>
+<button id="start">开始按时间采集</button><button id="stop">停止</button><p id="status" role="status">采集期间请保持B站标签页处于前台。每张截图会记录实际播放时间和显示状态。</p>
+<script src="popup.js"></script></html>

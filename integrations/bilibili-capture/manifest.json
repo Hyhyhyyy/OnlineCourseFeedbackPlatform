@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "课镜 · B站原生快照采集",
+  "version": "1.0.0",
+  "description": "由使用者启动，在B站原播放器定位并截取实际显示的课程画面、中文字幕和弹幕，保存至本机课镜工作台。",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["http://127.0.0.1/*"],
+  "background": {"service_worker": "background.js", "type": "module"},
+  "action": {"default_popup": "popup.html", "default_title": "采集本页B站教学快照"}
+}

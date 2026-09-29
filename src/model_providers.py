@@ -1,5 +1,6 @@
 """Server-side inference profiles. Credentials never enter browser responses."""
 import os
+from urllib.parse import urlsplit
 
 
 def settings(provider):
@@ -17,6 +18,7 @@ def settings(provider):
     key = os.environ.get(prefix+'_KEY', '')
     if not url or not model:
         raise ValueError('请先在服务器配置 '+prefix+'_BASE_URL 和 '+prefix+'_MODEL')
-    if not url.startswith('https://') and not url.startswith('http://127.0.0.1:'):
-        raise ValueError('远程模型连接必须使用 HTTPS')
+    parsed=urlsplit(url)
+    if not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment or not (parsed.scheme=='https' or (parsed.scheme=='http' and parsed.hostname=='127.0.0.1')):
+        raise ValueError('请使用不带凭据或查询参数的 HTTPS 地址；本机回环地址可使用 HTTP')
     return dict(model=model, url=url, key=key)

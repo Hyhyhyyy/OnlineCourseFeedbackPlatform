@@ -65,9 +65,10 @@ def configure(data):
     key=str(data.get('key','')).strip()
     if not key or len(key)>4096 or any(c.isspace() for c in key):raise ValueError('请输入有效格式的 API Key')
     model=str(data.get('model','')).strip()
+    output_format=data.get('format','json_object')
+    if output_format not in ('json_object','json_schema'):raise ValueError('输出格式无效')
     with LOCK:
-        CONFIG=dict(vendor=vendor,url=url,key=key,model=model,format=data.get('format','json_object'))
-        if CONFIG['format'] not in ('json_object','json_schema'):raise ValueError('输出格式无效')
+        CONFIG=dict(vendor=vendor,url=url,key=key,model=model,format=output_format)
         STATE.update(text_verified_until=0,vision_verified_until=0,key_status='已保存到本次服务内存，尚未验证',models=[],checked_at=None,balance='未查询',requests=0,input_tokens=0,output_tokens=0,missing_usage=0)
     return public()
 
@@ -84,6 +85,7 @@ def public():
     with LOCK:
         return dict(STATE,configured=bool(CONFIG),vendor=CONFIG['vendor'] if CONFIG else None,
             url=CONFIG['url'] if CONFIG else '',model=CONFIG['model'] if CONFIG else '',
+            format=CONFIG['format'] if CONFIG else 'json_object',
             key_present=bool(CONFIG),campus_status='【待真实接入测试】',presets=PRESETS)
 
 
@@ -161,7 +163,7 @@ def probe(vision=False):
             raise ValueError('请求已返回，但 JSON 输出探测未通过；不能据此认定 Key 无效')
         with LOCK:
             if CONFIG!=cfg:raise ValueError('验证期间配置已更改，请重新验证')
-            STATE.update(text_verified_until=time.time()+900,key_status='图文接口已验证，可进行音视频辅助分析' if vision else '文本接口已验证；音视频分析还需图文验证',checked_at=datetime.datetime.now().astimezone().isoformat())
+            STATE.update(text_verified_until=time.time()+900,key_status='合成图片与 JSON 响应测试通过' if vision else '文本 JSON 响应测试通过；图文能力另行验证',checked_at=datetime.datetime.now().astimezone().isoformat())
             if vision:STATE['vision_verified_until']=time.time()+900
     except (ValueError,KeyError,IndexError) as exc:
         invalidate(str(exc) if isinstance(exc,ValueError) else '模型响应结构不兼容')
